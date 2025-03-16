@@ -1,0 +1,77 @@
+[project]
+name = "HKUCourseHub-Backend"
+version = "0.0.1"
+description = """
+This is the project of the backend of the HKUCourse App for HKU COMP7506 Smart phone apps development [Section 2A, 2024]
+"""
+authors = [
+    { name = "Wang Shangmin", email = "u3638175@connect.hku.hk" },
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "aiofiles>=24.1.0",
+    "alembic>=1.14.1",
+    "asgi-correlation-id>=4.3.3",
+    "asgiref>=3.8.0",
+    "asyncmy>=0.2.10",
+    "asyncpg>=0.30.0",
+    "bcrypt>=4.2.1",
+    "celery==5.3.6",
+    # When celery version < 6.0.0
+    # https://github.com/celery/celery/issues/7874
+    "celery-aio-pool==0.1.0rc8",
+    "cryptography>=44.0.0",
+    "fast-captcha>=0.3.2",
+    "fastapi-cli==0.0.5",
+    "fastapi-limiter>=0.1.6",
+    "fastapi-oauth20>=0.0.1a2",
+    "fastapi-pagination>=0.12.34",
+    "fastapi[all]==0.111.0",
+    "flower>=2.0.0",
+    "gevent>=24.11.1",
+    "itsdangerous>=2.2.0",
+    "jinja2>=3.1.4",
+    "loguru>=0.7.3",
+    "msgspec>=0.19.0",
+    "path==17.0.0",
+    "phonenumbers>=8.13.0",
+    "psutil>=6.0.0",
+    "pwdlib>=0.2.1",
+    "pydantic>=2.10.6",
+    "python-jose>=3.3.0",
+    "python-socketio>=5.12.0",
+    "redis[hiredis]>=5.2.0",
+    "rtoml>=0.12.0",
+    "sqlalchemy-crud-plus==1.6.0",
+    "sqlalchemy[asyncio]>=2.0.30",
+    "user-agents==2.2.0",
+    "XdbSearchIP>=1.0.2",
+    "casbin>=1.0.0",
+    "casbin_async_sqlalchemy_adapter>=1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-sugar>=1.0.0",
+]
+lint = [
+    "ruff>=0.9.0",
+    "pre-commit>=4.0.0",
+]
+server = [
+    "gunicorn==21.2.0",
+    "aio-pika==9.4.3",
+    "wait-for-it>=2.2.2",
+]
+
+[tool.uv]
+package = false
+python-downloads = "manual"
+default-groups = ["dev", "lint"]
+
+[[tool.uv.index]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple"
