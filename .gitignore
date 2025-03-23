@@ -2,4 +2,4 @@
 .vscode/
 .github/
 .env
-old/
+.DS_Store
