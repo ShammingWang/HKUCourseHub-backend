@@ -22,6 +22,9 @@ from backend.plugin.tools import get_plugin_models
 from backend.app.admin.model import *  # noqa: F401
 from backend.app.generator.model import *  # noqa: F401
 
+# this is the custom model for user module
+from backend.app.main.model import *  # noqa: F401
+
 # import plugin model
 for cls in get_plugin_models():
     class_name = cls.__name__

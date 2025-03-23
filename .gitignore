@@ -3,3 +3,4 @@
 .github/
 .env
 .DS_Store
+.cursor/
