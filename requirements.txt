@@ -13,7 +13,7 @@ asyncpg==0.30.0
 bcrypt==4.3.0
 bidict==0.23.1
 billiard==4.2.1
-casbin==1.0.0
+casbin
 casbin_async_sqlalchemy_adapter
 celery==5.3.6
 celery-aio-pool==0.1.0rc8
@@ -124,3 +124,4 @@ wsproto==1.2.0
 xdbsearchip==1.0.2
 zope-event==5.0
 zope-interface==7.2
+ip2loc
