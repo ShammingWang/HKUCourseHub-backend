@@ -11,8 +11,8 @@ from backend.core.conf import settings
 
 v1 = APIRouter(prefix=settings.FASTAPI_API_V1_PATH)
 
-v1.include_router(auth_router)
-v1.include_router(oauth2_router)
-v1.include_router(sys_router)
-v1.include_router(log_router)
-v1.include_router(monitor_router)
+# v1.include_router(auth_router)
+# v1.include_router(oauth2_router)
+# v1.include_router(sys_router)
+# v1.include_router(log_router)
+# v1.include_router(monitor_router)
