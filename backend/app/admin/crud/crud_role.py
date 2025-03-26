@@ -7,6 +7,8 @@ from sqlalchemy.orm import noload, selectinload
 from sqlalchemy_crud_plus import CRUDPlus
 
 from backend.app.admin.model import DataRule, Menu, Role, User
+# from backend.app.main.model import User
+
 from backend.app.admin.schema.role import (
     CreateRoleParam,
     UpdateRoleMenuParam,

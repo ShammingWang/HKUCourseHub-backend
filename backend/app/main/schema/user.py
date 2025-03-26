@@ -14,4 +14,16 @@ from backend.common.schema import CustomPhoneNumber, SchemaBase
 
 class AuthSchemaBase(SchemaBase):
     username: str
-    passwordhash: str | None
+    password: str | None
+
+
+class AuthSchemaParam(AuthSchemaBase):  # the same as AuthSchemaBase
+    pass
+
+
+class UserInfoSchemaBase(SchemaBase):
+    username: str
+    email: EmailStr | None = None
+
+class GetUserInfoWithRelationDetail(UserInfoSchemaBase):
+    model_config = ConfigDict(from_attributes=True)

@@ -20,7 +20,7 @@ from backend.core.path_conf import STATIC_DIR, UPLOAD_DIR
 from backend.database.db import create_table
 from backend.database.redis import redis_client
 from backend.middleware.jwt_auth_middleware import JwtAuthMiddleware
-from backend.middleware.opera_log_middleware import OperaLogMiddleware
+# from backend.middleware.opera_log_middleware import OperaLogMiddleware
 from backend.middleware.state_middleware import StateMiddleware
 from backend.plugin.tools import plugin_router_inject
 from backend.utils.demo_site import demo_site
@@ -126,7 +126,8 @@ def register_middleware(app: FastAPI):
     :return:
     """
     # Opera log (required)
-    app.add_middleware(OperaLogMiddleware)
+    # app.add_middleware(OperaLogMiddleware)
+    
     # JWT auth (required)
     app.add_middleware(
         AuthenticationMiddleware, backend=JwtAuthMiddleware(), on_error=JwtAuthMiddleware.auth_exception_handler
@@ -164,7 +165,7 @@ def register_router(app: FastAPI):
     dependencies = [Depends(demo_site)] if settings.DEMO_MODE else None
 
     # API
-    plugin_router_inject()
+    # plugin_router_inject()
 
     from backend.app.router import router  # 必须在插件路由注入后导入
 
