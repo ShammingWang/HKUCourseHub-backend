@@ -21,6 +21,10 @@ class AuthSchemaParam(AuthSchemaBase):  # the same as AuthSchemaBase
     pass
 
 
+class RegisterUserParam(AuthSchemaBase):
+    email: EmailStr = Field(examples=['user@example.com'])
+
+
 class UserInfoSchemaBase(SchemaBase):
     username: str
     email: EmailStr | None = None

@@ -7,9 +7,8 @@ from fastapi.security import HTTPBasicCredentials
 from fastapi_limiter.depends import RateLimiter
 from starlette.background import BackgroundTasks
 
-# from backend.app.admin.schema.token import GetLoginToken, GetNewToken, GetSwaggerToken
 from backend.app.main.schema.user import AuthSchemaParam
-# from backend.app.admin.service.auth_service import auth_service
+
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth
 
@@ -26,6 +25,7 @@ async def user_login(
     request: Request, response: Response, obj: AuthSchemaParam, background_tasks: BackgroundTasks
 ) -> ResponseSchemaModel[object]:
     # data = await auth_service.login(request=request, response=response, obj=obj, background_tasks=background_tasks)
+    
     return response_base.success(data=None)
 
 # @router.post('/login/swagger', summary='swagger 调试专用', description='用于快捷获取 token 进行 swagger 认证')
