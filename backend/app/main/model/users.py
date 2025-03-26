@@ -14,6 +14,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, comment='邮箱')
     password: Mapped[str] = mapped_column(String(255), nullable=False, comment='密码哈希')
     salt: Mapped[bytes | None] = mapped_column(VARBINARY(255), comment='加密盐')
+    # last_login_time: Mapped[datetime | None] = mapped_column(TIMESTAMP, nullable=True, comment='最近登录时间')
 
     # created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=timezone.now, comment='创建时间')
 

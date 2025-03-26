@@ -182,22 +182,24 @@ async def get_current_user(db: AsyncSession, pk: int) -> User:
     :param pk:
     :return:
     """
-    from backend.app.admin.crud.crud_user import user_dao
-
-    user = await user_dao.get_with_relation(db, user_id=pk)
+    # from backend.app.admin.crud.crud_user import user_dao
+    from backend.app.main.crud.crud_user import user_dao
+    
+    # user = await user_dao.get_with_relation(db, user_id=pk)
+    user = await user_dao.get(db, user_id=pk)
     if not user:
         raise TokenError(msg='Token 无效')
-    if not user.status:
-        raise AuthorizationError(msg='用户已被锁定，请联系系统管理员')
-    if user.dept_id:
-        if not user.dept.status:
-            raise AuthorizationError(msg='用户所属部门已被锁定，请联系系统管理员')
-        if user.dept.del_flag:
-            raise AuthorizationError(msg='用户所属部门已被删除，请联系系统管理员')
-    if user.roles:
-        role_status = [role.status for role in user.roles]
-        if all(status == 0 for status in role_status):
-            raise AuthorizationError(msg='用户所属角色已被锁定，请联系系统管理员')
+    # if not user.status:
+    #     raise AuthorizationError(msg='用户已被锁定，请联系系统管理员')
+    # if user.dept_id:
+    #     if not user.dept.status:
+    #         raise AuthorizationError(msg='用户所属部门已被锁定，请联系系统管理员')
+    #     if user.dept.del_flag:
+    #         raise AuthorizationError(msg='用户所属部门已被删除，请联系系统管理员')
+    # if user.roles:
+    #     role_status = [role.status for role in user.roles]
+    #     if all(status == 0 for status in role_status):
+    #         raise AuthorizationError(msg='用户所属角色已被锁定，请联系系统管理员')
     return user
 
 
