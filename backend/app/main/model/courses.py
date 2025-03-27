@@ -19,7 +19,7 @@ class Course(Base):
     created_by: Mapped[int | None] = mapped_column(ForeignKey('users.id', ondelete='SET NULL'), comment='创建者')
     # created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=timezone.now, comment='创建时间')
 
-    # 课程与用户一对多
+    # 课程与用户一对一
     creator: Mapped['User'] = relationship(back_populates='courses')  # noqa: F821
     # 课程与教师一对多
     course_teachers: Mapped[list['CourseTeacher']] = relationship(back_populates='course', cascade='all, delete-orphan')  # noqa: F821
