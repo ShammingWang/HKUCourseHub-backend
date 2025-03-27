@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from math import ceil
-from typing import TYPE_CHECKING, Generic, Sequence, TypeVar
+from typing import TYPE_CHECKING, Generic, Optional, Sequence, TypeVar, Type
 
 from fastapi import Depends, Query
 from fastapi_pagination import pagination_ctx
@@ -102,8 +102,12 @@ class PageData(_PageDetails, Generic[SchemaT]):
 
     items: Sequence[SchemaT]
 
-
-async def paging_data(db: AsyncSession, select: Select) -> dict:
+# 这是一个通用的分页函数 可以根据指定的模型进行转换输出格式 避免直接输出sqlalchemy的模型 访问到懒加载的数据
+async def paging_data(
+        db: AsyncSession, 
+        select: Select,
+        schema_model: Optional[Type[BaseModel]] = None,
+    ) -> dict:
     """
     基于 SQLAlchemy 创建分页数据
 
@@ -112,6 +116,12 @@ async def paging_data(db: AsyncSession, select: Select) -> dict:
     :return:
     """
     paginated_data: _CustomPage = await paginate(db, select)
+    # 如果提供 schema_model，则转换为 Pydantic 模型并安全 dump
+    if schema_model is not None: 
+        list_data = []
+        for i in paginated_data.items:
+            list_data.append(schema_model.model_validate(i))
+        paginated_data.items = list_data
     page_data = paginated_data.model_dump()
     return page_data
 
