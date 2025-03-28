@@ -125,3 +125,4 @@ xdbsearchip==1.0.2
 zope-event==5.0
 zope-interface==7.2
 ip2loc
+aio_pika # for production
