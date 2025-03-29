@@ -14,7 +14,7 @@ from sqlalchemy.orm import selectinload
 router = APIRouter()
 
 @router.get(
-    "/",
+    "/courses",
     summary="获取课程列表",
     description="获取课程列表接口",
     dependencies=[
@@ -35,7 +35,7 @@ async def get_courses(
 
 
 @router.get(
-    "/me",
+    "/courses/me",
     summary="获取当前用户课程列表",
     description="根据当前用户获取课程列表",
     dependencies=[
@@ -51,7 +51,7 @@ async def get_courses_by_current_user(
     return response_base.success(data=courses)
 
 @router.get(
-    "/{course_id}",
+    "/course/{course_id}",
     summary="获取课程详细信息",
     description="根据课程ID获取课程详细信息",
     dependencies=[

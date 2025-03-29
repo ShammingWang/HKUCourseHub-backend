@@ -13,4 +13,3 @@ router = APIRouter()
 # router.include_router(generator_v1)
 # router.include_router(task_v1)
 router.include_router(main_v1)
-

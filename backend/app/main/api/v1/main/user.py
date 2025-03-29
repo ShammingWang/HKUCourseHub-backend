@@ -17,7 +17,7 @@ from sqlalchemy.orm import selectinload
 router = APIRouter()
 
 @router.get(
-    "/me",
+    "/user/me",
     summary="获取当前用户信息",
     description="获取当前用户信息接口",
     dependencies=[
