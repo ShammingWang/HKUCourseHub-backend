@@ -14,7 +14,7 @@ from sqlalchemy.orm import selectinload
 router = APIRouter()
 
 @router.get(
-    "/courses",
+    "/",
     summary="获取课程列表",
     description="获取课程列表接口",
     dependencies=[
@@ -32,8 +32,26 @@ async def get_courses(
     page_data = await paging_data(db, course_select, schema_model=GetCourseDetail)
     return response_base.success(data=page_data)
 
+
+
 @router.get(
-    "/courses/{course_id}",
+    "/me",
+    summary="获取当前用户课程列表",
+    description="根据当前用户获取课程列表",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def get_courses_by_current_user(
+    request: Request,
+    response: Response,
+) -> ResponseSchemaModel[list[GetCourseDetailWithRelation]]:
+    user_id = request.user.id  # 由jwt认证提供的用户ID
+    courses = await course_service.get_current_user_courses(user_id=user_id)
+    return response_base.success(data=courses)
+
+@router.get(
+    "/{course_id}",
     summary="获取课程详细信息",
     description="根据课程ID获取课程详细信息",
     dependencies=[
@@ -56,19 +74,5 @@ async def get_course_with_relation(
     return response_base.success(data=course)
 
 
-@router.get(
-    "/currentUserCourses",
-    summary="获取当前用户课程列表",
-    description="根据当前用户获取课程列表",
-    dependencies=[
-        DependsJwtAuth,  # 需要jwt认证
-    ]
-)
-async def get_courses_by_current_user(
-    request: Request,
-    response: Response,
-) -> ResponseSchemaModel[list[GetCourseDetailWithRelation]]:
-    user_id = request.user.id  # 由jwt认证提供的用户ID
-    courses = await course_service.get_current_user_courses(user_id=user_id)
-    return response_base.success(data=courses)
+
 

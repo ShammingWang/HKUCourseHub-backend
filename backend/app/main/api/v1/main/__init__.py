@@ -4,5 +4,5 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-router.include_router(course_router, tags=["课程类API"], prefix="/main")
+router.include_router(course_router, tags=["课程类API"], prefix="/course")
 router.include_router(user_router, tags=["用户类API"], prefix="/user")
