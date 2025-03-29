@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response,
 from backend.app.main.model.courses import Course
 from backend.app.main.schema.course import GetCourseDetail, GetCourseDetailWithRelation
 from backend.app.main.service.course_service import course_service
-from backend.common.exception.errors import NotFoundError
+from backend.common.exception import errors
 from backend.common.pagination import DependsPagination, PageData, paging_data
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth
@@ -52,7 +52,7 @@ async def get_course_with_relation(
     """
     course = await course_service.get_course_with_relation_by_id(course_id=course_id)
     if not course:
-        raise NotFoundError
+        raise errors.NotFoundError(msg="id为{}的课程不存在".format(course_id))
     return response_base.success(data=course)
 
 

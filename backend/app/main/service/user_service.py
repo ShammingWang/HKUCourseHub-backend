@@ -6,7 +6,7 @@ from fastapi import Request
 from sqlalchemy import Select
 
 
-from backend.app.main.schema.user import RegisterUserParam
+from backend.app.main.schema.user import GetUserInfoDetail, RegisterUserParam
 from backend.app.main.crud.crud_user import user_dao
 
 from backend.common.exception import errors
@@ -33,6 +33,12 @@ class UserService:
             if email:
                 raise errors.ForbiddenError(msg='邮箱已注册')
             await user_dao.create(db, obj)
-
+    @staticmethod
+    async def get_user_by_id(*, id: int) -> GetUserInfoDetail:
+        async with async_db_session.begin() as db:
+            user = await user_dao.get(db, id)
+            if not user:
+                raise errors.NotFoundError(msg='id为{}的用户不存在'.format(id))
+            return GetUserInfoDetail.model_validate(user)
 
 user_service: UserService = UserService()

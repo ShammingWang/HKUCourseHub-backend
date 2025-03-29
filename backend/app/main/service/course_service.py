@@ -6,7 +6,7 @@ from backend.app.main.crud.crud_course import course_dao
 from backend.app.main.crud.crud_user_course import user_course_dao
 
 from backend.app.main.schema.course import GetCourseDetailWithRelation
-from backend.common.exception.errors import NotFoundError
+from backend.common.exception import errors
 from backend.database.db import async_db_session
 
 
@@ -44,7 +44,7 @@ class CourseService:
         async with async_db_session.begin() as db:
             course = await course_dao.get(db, course_id)
             if course is None:
-                raise NotFoundError
+                raise errors.NotFoundError(msg='id为{}的课程不存在'.format(course_id))
             await db.refresh(course, ['course_schedules'])
             await db.refresh(course, ['course_teachers'])
             return GetCourseDetailWithRelation.model_validate(course)

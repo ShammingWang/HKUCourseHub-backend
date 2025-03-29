@@ -17,7 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # from backend.app.admin.model import User
 # from backend.app.admin.schema.user import GetUserInfoWithRelationDetail
 from backend.app.main.model import User
-from backend.app.main.schema.user import GetUserInfoWithRelationDetail
+from backend.app.main.schema.user import GetUserInfoDetailWithRelation
 
 from backend.common.dataclasses import AccessToken, NewToken, RefreshToken, TokenPayload
 from backend.common.exception.errors import AuthorizationError, TokenError
@@ -216,7 +216,7 @@ def superuser_verify(request: Request) -> bool:
     return superuser
 
 
-async def jwt_authentication(token: str) -> GetUserInfoWithRelationDetail:
+async def jwt_authentication(token: str) -> GetUserInfoDetailWithRelation:
     """
     JWT authentication
 
@@ -232,7 +232,7 @@ async def jwt_authentication(token: str) -> GetUserInfoWithRelationDetail:
     if not cache_user:
         async with async_db_session() as db:
             current_user = await get_current_user(db, user_id)
-            user = GetUserInfoWithRelationDetail(**select_as_dict(current_user))
+            user = GetUserInfoDetailWithRelation(**select_as_dict(current_user))
             await redis_client.setex(
                 f'{settings.JWT_USER_REDIS_PREFIX}:{user_id}',
                 settings.JWT_USER_REDIS_EXPIRE_SECONDS,
@@ -241,5 +241,5 @@ async def jwt_authentication(token: str) -> GetUserInfoWithRelationDetail:
     else:
         # TODO: 在恰当的时机，应替换为使用 model_validate_json
         # https://docs.pydantic.dev/latest/concepts/json/#partial-json-parsing
-        user = GetUserInfoWithRelationDetail.model_validate(from_json(cache_user, allow_partial=True))
+        user = GetUserInfoDetailWithRelation.model_validate(from_json(cache_user, allow_partial=True))
     return user
