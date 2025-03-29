@@ -89,7 +89,7 @@ class AuthService:
                     # ip=request.state.ip,
                     # os=request.state.os,
                     # browser=request.state.browser,
-                    # device=request.state.device,
+                    # device=request.state.device, 
                 )
                 r_token = await create_refresh_token(str(user.id), is_multi_login) # user.is_multi_login
                 response.set_cookie(

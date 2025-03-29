@@ -7,6 +7,7 @@ from pydantic import ConfigDict, EmailStr, Field, HttpUrl, model_validator
 from typing_extensions import Self
 
 
+from backend.app.main.schema.course import GetCourseDetail
 from backend.common.enums import StatusType
 from backend.common.schema import CustomPhoneNumber, SchemaBase
 
@@ -29,13 +30,14 @@ class RegisterUserParam(AuthSchemaBase):
 
 
 class UserInfoSchemaBase(SchemaBase):
+    id: int
     username: str
     email: EmailStr | None = None
 
 class GetUserInfoDetail(UserInfoSchemaBase):
     # 这个很重要 返回给前端的数据必须是padantic的模型 这里允许从sqlalchemy的模型中直接转换
     model_config = ConfigDict(from_attributes=True)
-    id: int
 
 class GetUserInfoWithRelationDetail(UserInfoSchemaBase):
     model_config = ConfigDict(from_attributes=True)
+    # courses: list[GetCourseDetail]
