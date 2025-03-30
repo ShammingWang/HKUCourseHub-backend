@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response,
 from backend.app.main.model.courses import Course
 from backend.app.main.schema.course import GetCourseDetail, GetCourseDetailWithRelation
 from backend.app.main.schema.course_schedule import CreateCourseSchedule
-from backend.app.main.schema.course_teacher import CreateTeacherCourse
+from backend.app.main.schema.course_teacher import CreateCourseTeacher, UpdateCourseTeacher
 from backend.app.main.service.course_service import course_service
 from backend.common.exception import errors
 from backend.common.pagination import DependsPagination, PageData, paging_data
@@ -84,7 +84,7 @@ async def get_course_with_relation(
     ]
 )
 async def add_course_teacher(
-    obj: CreateTeacherCourse,
+    obj: CreateCourseTeacher,
 ) -> ResponseSchemaModel[None]:
     """
     添加课程教师
@@ -93,6 +93,28 @@ async def add_course_teacher(
     :return: None
     """
     await course_service.add_course_teacher(obj=obj)
+    return response_base.success()
+
+
+@router.put(
+    "/course/teacher",
+    summary="修改课程教师",
+    description="修改课程教师接口",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def update_course_teacher(
+    obj: UpdateCourseTeacher,
+) -> ResponseSchemaModel[None]:
+    """
+    修改课程教师
+    :param id: 课程教师关系ID
+    :param course_id: 课程ID
+    :param teacher_id: 教师ID
+    :return: None
+    """
+    await course_service.update_course_teacher(obj=obj)
     return response_base.success()
 
 

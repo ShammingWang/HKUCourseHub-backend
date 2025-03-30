@@ -12,7 +12,7 @@ from sqlalchemy_crud_plus import CRUDPlus
 from backend.app.main.model.course_teachers import CourseTeacher
 from backend.app.main.model.courses import Course
 from backend.app.main.model.user_courses import UserCourse
-from backend.app.main.schema.course_teacher import CreateTeacherCourse
+from backend.app.main.schema.course_teacher import CreateCourseTeacher
 from backend.common.security.jwt import get_hash_password
 from backend.utils.timezone import timezone
 
@@ -25,7 +25,7 @@ class CRUDUser(CRUDPlus[CourseTeacher]):
         return await self.select_model(db, course_teacher_id)
     
 
-    async def add_course_teacher(self, db: AsyncSession, obj: CreateTeacherCourse) -> CourseTeacher | None:
+    async def add_course_teacher(self, db: AsyncSession, obj: CreateCourseTeacher) -> CourseTeacher | None:
         obj_dump = obj.model_dump()
         course_teacher = self.model(**obj_dump)
         db.add(course_teacher)

@@ -8,7 +8,7 @@ from typing_extensions import Self
 
 
 from backend.app.main.schema.course_schedule import GetCourseScheduleDetail
-from backend.app.main.schema.course_teacher import GetTeacherCourseDetail
+from backend.app.main.schema.course_teacher import GetCourseTeacherDetail
 from backend.common.enums import StatusType
 from backend.common.schema import SchemaBase
 
@@ -28,7 +28,7 @@ class GetCourseDetail(CourseSchemaBase):
 class GetCourseDetailWithRelation(GetCourseDetail):
     model_config = ConfigDict(from_attributes=True)
     # creator: Optional['UserSchema'] = None
-    course_teachers: Optional[list[GetTeacherCourseDetail]] = None
+    course_teachers: Optional[list[GetCourseTeacherDetail]] = None
     course_schedules: Optional[list[GetCourseScheduleDetail]] = None
     # user_courses: Optional[List['UserCourseSchema']] = None
     # favorite_courses: Optional[List['FavoriteCourseSchema']] = None
