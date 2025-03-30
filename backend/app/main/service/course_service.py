@@ -55,6 +55,10 @@ class CourseService:
     @staticmethod
     async def add_course_teacher(*, obj: CreateTeacherCourse) -> None:
         async with async_db_session.begin() as db:
+            # 先判断课程是否存在
+            course = await course_dao.get(db, obj.course_id)
+            if course is None:
+                raise errors.NotFoundError(msg='id为{}的课程不存在'.format(obj.course_id))
             await course_teacher_dao.add_course_teacher(db, obj)
 
 course_service: CourseService = CourseService()
