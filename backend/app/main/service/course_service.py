@@ -6,6 +6,9 @@ from backend.app.main.crud.crud_course import course_dao
 from backend.app.main.crud.crud_user_course import user_course_dao
 
 from backend.app.main.schema.course import GetCourseDetailWithRelation
+from backend.app.main.schema.course_teacher import CreateTeacherCourse
+from backend.app.main.crud.curd_course_teacher import course_teacher_dao
+
 from backend.common.exception import errors
 from backend.database.db import async_db_session
 
@@ -48,5 +51,10 @@ class CourseService:
             await db.refresh(course, ['course_schedules'])
             await db.refresh(course, ['course_teachers'])
             return GetCourseDetailWithRelation.model_validate(course)
-        
+    
+    @staticmethod
+    async def add_course_teacher(*, obj: CreateTeacherCourse) -> None:
+        async with async_db_session.begin() as db:
+            await course_teacher_dao.add_course_teacher(db, obj)
+
 course_service: CourseService = CourseService()

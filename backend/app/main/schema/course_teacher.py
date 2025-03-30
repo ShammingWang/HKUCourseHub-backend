@@ -12,4 +12,10 @@ class GetTeacherCourseDetail(SchemaBase):
     pass
     model_config = ConfigDict(from_attributes=True)
     id: int
+    # course_id: int  # 不需要返回课程ID
+    teacher_name: str
+
+class CreateTeacherCourse(SchemaBase):
+    """创建教师课程"""
+    course_id: int
     teacher_name: str

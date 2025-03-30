@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response,
 # from sqlalchemy.orm import Session
 from backend.app.main.model.courses import Course
 from backend.app.main.schema.course import GetCourseDetail, GetCourseDetailWithRelation
+from backend.app.main.schema.course_teacher import CreateTeacherCourse
 from backend.app.main.service.course_service import course_service
 from backend.common.exception import errors
 from backend.common.pagination import DependsPagination, PageData, paging_data
@@ -73,6 +74,22 @@ async def get_course_with_relation(
         raise errors.NotFoundError(msg="id为{}的课程不存在".format(course_id))
     return response_base.success(data=course)
 
-
-
-
+@router.post(
+    "/course/teacher",
+    summary="添加课程教师",
+    description="添加课程教师接口",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def add_course_teacher(
+    obj: CreateTeacherCourse,
+) -> ResponseSchemaModel[None]:
+    """
+    添加课程教师
+    :param course_id: 课程ID
+    :param teacher_id: 教师ID
+    :return: None
+    """
+    await course_service.add_course_teacher(obj=obj)
+    return response_base.success()
