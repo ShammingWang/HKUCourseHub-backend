@@ -18,4 +18,4 @@ class CourseSchedule(Base):
     location: Mapped[str] = mapped_column(String(255), nullable=False, comment='上课地点')
 
     # 时间表与课程多对一
-    course: Mapped['Course'] = relationship(back_populates='course_schedules')  # noqa: F821
+    course: Mapped['Course'] = relationship(back_populates='course_schedules', init=False)  # noqa: F821

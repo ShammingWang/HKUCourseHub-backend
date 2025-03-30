@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response,
 # from sqlalchemy.orm import Session
 from backend.app.main.model.courses import Course
 from backend.app.main.schema.course import GetCourseDetail, GetCourseDetailWithRelation
+from backend.app.main.schema.course_schedule import CreateCourseSchedule
 from backend.app.main.schema.course_teacher import CreateTeacherCourse
 from backend.app.main.service.course_service import course_service
 from backend.common.exception import errors
@@ -92,4 +93,26 @@ async def add_course_teacher(
     :return: None
     """
     await course_service.add_course_teacher(obj=obj)
+    return response_base.success()
+
+
+@router.post(
+    "/course/schedule",
+    summary="添加课程安排",
+    description="添加课程安排接口",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def add_course_schedule(
+    obj: CreateCourseSchedule,
+) -> ResponseSchemaModel[None]:
+    """
+    添加课程安排
+    :param course_id: 课程ID
+    :param schedule_time: 安排时间
+    :param location: 上课地点
+    :return: None
+    """
+    await course_service.add_course_schedule(obj=obj)
     return response_base.success()

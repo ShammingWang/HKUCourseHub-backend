@@ -6,8 +6,10 @@ from backend.app.main.crud.crud_course import course_dao
 from backend.app.main.crud.crud_user_course import user_course_dao
 
 from backend.app.main.schema.course import GetCourseDetailWithRelation
+from backend.app.main.schema.course_schedule import CreateCourseSchedule
 from backend.app.main.schema.course_teacher import CreateTeacherCourse
 from backend.app.main.crud.curd_course_teacher import course_teacher_dao
+from backend.app.main.crud.crud_course_schedule import course_schedule_dao
 
 from backend.common.exception import errors
 from backend.database.db import async_db_session
@@ -60,5 +62,15 @@ class CourseService:
             if course is None:
                 raise errors.NotFoundError(msg='id为{}的课程不存在'.format(obj.course_id))
             await course_teacher_dao.add_course_teacher(db, obj)
+
+    @staticmethod
+    async def add_course_schedule(*, obj: CreateCourseSchedule) -> None:
+        async with async_db_session.begin() as db:
+            # 先判断课程是否存在
+            course = await course_dao.get(db, obj.course_id)
+            if course is None:
+                raise errors.NotFoundError(msg='id为{}的课程不存在'.format(obj.course_id))
+            await course_schedule_dao.add_course_schedule(db, obj)
+
 
 course_service: CourseService = CourseService()
