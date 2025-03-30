@@ -12,4 +12,4 @@ class CourseTeacher(Base):
     teacher_name: Mapped[str] = mapped_column(String(100), nullable=False, comment='教师名称')
 
     # 教师与课程多对一
-    course: Mapped['Course'] = relationship(back_populates='course_teachers')  # noqa: F821
+    course: Mapped['Course'] = relationship(back_populates='course_teachers', init=False)  # noqa: F821
