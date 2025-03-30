@@ -6,7 +6,7 @@ from backend.app.main.crud.crud_course import course_dao
 from backend.app.main.crud.crud_user_course import user_course_dao
 
 from backend.app.main.schema.course import GetCourseDetailWithRelation
-from backend.app.main.schema.course_schedule import CreateCourseSchedule
+from backend.app.main.schema.course_schedule import CreateCourseSchedule, UpdateCourseSchedule
 from backend.app.main.schema.course_teacher import CreateCourseTeacher, UpdateCourseTeacher
 from backend.app.main.crud.curd_course_teacher import course_teacher_dao
 from backend.app.main.crud.crud_course_schedule import course_schedule_dao
@@ -91,6 +91,26 @@ class CourseService:
             if course is None:
                 raise errors.NotFoundError(msg='id为{}的课程不存在'.format(obj.course_id))
             await course_schedule_dao.add_course_schedule(db, obj)
+
+    @staticmethod
+    async def update_course_schedule(*, obj: UpdateCourseSchedule) -> None:
+        async with async_db_session.begin() as db:
+            # 先判断课程安排是否存在
+            course_schedule = await course_schedule_dao.get(db, obj.id)
+            if course_schedule is None:
+                raise errors.NotFoundError(msg='id为{}的课程安排不存在'.format(obj.id))
+            
+            # # 检查课程是否存在（如有需要可取消注释）
+            # course = await course_dao.get(db, obj.course_id)
+            # if course is None:
+            #     raise errors.NotFoundError(msg='id为{}的课程不存在'.format(obj.course_id))
+
+            # 调用 DAO 的 update_model 方法（按主键更新）
+            await course_schedule_dao.update_model(
+                session=db,
+                pk=obj.id,
+                obj=obj
+            )
 
 
 course_service: CourseService = CourseService()

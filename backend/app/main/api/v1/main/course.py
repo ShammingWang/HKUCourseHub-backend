@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response,
 # from sqlalchemy.orm import Session
 from backend.app.main.model.courses import Course
 from backend.app.main.schema.course import GetCourseDetail, GetCourseDetailWithRelation
-from backend.app.main.schema.course_schedule import CreateCourseSchedule
+from backend.app.main.schema.course_schedule import CreateCourseSchedule, UpdateCourseSchedule
 from backend.app.main.schema.course_teacher import CreateCourseTeacher, UpdateCourseTeacher
 from backend.app.main.service.course_service import course_service
 from backend.common.exception import errors
@@ -137,4 +137,29 @@ async def add_course_schedule(
     :return: None
     """
     await course_service.add_course_schedule(obj=obj)
+    return response_base.success()
+
+
+@router.put(
+    "/course/schedule",
+    summary="修改课程安排",
+    description="修改课程安排接口",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def update_course_schedule(
+    obj: UpdateCourseSchedule,
+) -> ResponseSchemaModel[None]:
+    """
+    修改课程安排
+    :param id: 安排ID
+    :param schedule_date: 上课日期
+    :param day_of_week: 星期几
+    :param start_time: 开始时间
+    :param end_time: 结束时间
+    :param location: 上课地点
+    :return: None
+    """
+    await course_service.update_course_schedule(obj=obj)
     return response_base.success()
