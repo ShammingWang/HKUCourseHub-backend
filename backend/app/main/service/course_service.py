@@ -84,6 +84,15 @@ class CourseService:
             )
 
     @staticmethod
+    async def delete_course_teacher(*, id: int) -> None:
+        async with async_db_session.begin() as db:
+            course_teacher = await course_teacher_dao.get(db, id)
+            if course_teacher is None:
+                raise errors.NotFoundError(msg=f'id为{id}的课程教师关系不存在')
+
+            await course_teacher_dao.delete_model(db, pk=id)
+
+    @staticmethod
     async def add_course_schedule(*, obj: CreateCourseSchedule) -> None:
         async with async_db_session.begin() as db:
             # 先判断课程是否存在
@@ -111,6 +120,15 @@ class CourseService:
                 pk=obj.id,
                 obj=obj
             )
+
+    @staticmethod
+    async def delete_course_schedule(*, id: int) -> None:
+        async with async_db_session.begin() as db:
+            course_schedule = await course_schedule_dao.get(db, id)
+            if course_schedule is None:
+                raise errors.NotFoundError(msg=f'id为{id}的课程安排不存在')
+
+            await course_schedule_dao.delete_model(db, pk=id)
 
 
 course_service: CourseService = CourseService()

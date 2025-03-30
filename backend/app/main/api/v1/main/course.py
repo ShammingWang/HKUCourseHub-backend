@@ -117,6 +117,26 @@ async def update_course_teacher(
     await course_service.update_course_teacher(obj=obj)
     return response_base.success()
 
+@router.delete(
+    "/course/teacher",
+    summary="删除课程教师",
+    description="删除课程教师接口",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def delete_course_teacher(
+    id: int,
+) -> ResponseSchemaModel[None]:
+    """
+    删除课程教师
+    :param id: 课程教师关系ID
+    :return: None
+    """
+    await course_service.delete_course_teacher(id=id)
+    return response_base.success()
+
+
 
 @router.post(
     "/course/schedule",
@@ -163,3 +183,24 @@ async def update_course_schedule(
     """
     await course_service.update_course_schedule(obj=obj)
     return response_base.success()
+
+@router.delete(
+    "/course/schedule",
+    summary="删除课程安排",
+    description="删除课程安排接口",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def delete_course_schedule(
+    id: int,
+) -> ResponseSchemaModel[None]:
+    """
+    删除课程安排
+    :param id: 课程安排ID
+    :return: None
+    """
+    await course_service.delete_course_schedule(id=id)
+    return response_base.success()
+
+
