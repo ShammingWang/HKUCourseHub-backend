@@ -2,7 +2,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, Path
 # from sqlalchemy.orm import Session
 from backend.app.main.model.courses import Course
-from backend.app.main.schema.course import GetCourseDetail, GetCourseDetailWithRelation
+from backend.app.main.schema.course import CreateCourse, GetCourseDetail, GetCourseDetailWithRelation
 from backend.app.main.schema.course_schedule import CreateCourseSchedule, UpdateCourseSchedule
 from backend.app.main.schema.course_teacher import CreateCourseTeacher, UpdateCourseTeacher
 from backend.app.main.service.course_service import course_service
@@ -74,6 +74,29 @@ async def get_course_with_relation(
     if not course:
         raise errors.NotFoundError(msg="id为{}的课程不存在".format(course_id))
     return response_base.success(data=course)
+
+
+@router.post(
+    "/course",
+    summary="添加课程",
+    description="添加课程接口",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def add_course(
+    request: Request,
+    obj: CreateCourse,
+) -> ResponseSchemaModel[GetCourseDetail]:
+    """
+    添加课程
+
+    :param obj: 课程创建数据
+    :return: None
+    """
+    course = await course_service.add_course(obj=obj, user_id=request.user.id)
+    return response_base.success(data=GetCourseDetail.model_validate(course))
+
 
 @router.post(
     "/course/teacher",

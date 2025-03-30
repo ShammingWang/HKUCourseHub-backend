@@ -5,7 +5,8 @@ from sqlalchemy import Select
 from backend.app.main.crud.crud_course import course_dao
 from backend.app.main.crud.crud_user_course import user_course_dao
 
-from backend.app.main.schema.course import GetCourseDetailWithRelation
+from backend.app.main.model.courses import Course
+from backend.app.main.schema.course import CreateCourse, GetCourseDetailWithRelation
 from backend.app.main.schema.course_schedule import CreateCourseSchedule, UpdateCourseSchedule
 from backend.app.main.schema.course_teacher import CreateCourseTeacher, UpdateCourseTeacher
 from backend.app.main.crud.curd_course_teacher import course_teacher_dao
@@ -130,5 +131,17 @@ class CourseService:
 
             await course_schedule_dao.delete_model(db, pk=id)
 
+
+    @staticmethod
+    async def add_course(*, obj: CreateCourse, user_id: int) -> Course:
+        async with async_db_session.begin() as db:
+        # 使用 create_model 方法并传入额外字段 created_by
+            course = await course_dao.create_model(
+                session=db,
+                obj=obj,
+                created_by=user_id,
+                flush=True  # 确保能拿到生成的 ID
+            )
+            return course
 
 course_service: CourseService = CourseService()
