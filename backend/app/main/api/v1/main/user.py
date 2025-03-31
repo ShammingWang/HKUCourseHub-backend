@@ -31,3 +31,53 @@ async def get_current_user(
     user_id = request.user.id
     user = await user_service.get_user_by_id(id=user_id)
     return response_base.success(data=user)
+
+@router.get(
+    "/user/courses",
+    summary="获取当前用户课程列表",
+    description="根据当前用户获取课程列表",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def get_courses_by_current_user(
+    request: Request,
+    response: Response,
+) -> ResponseSchemaModel[list[GetCourseDetailWithRelation]]:
+    user_id = request.user.id  # 由jwt认证提供的用户ID
+    courses = await course_service.get_current_user_courses(user_id=user_id)
+    return response_base.success(data=courses)
+
+
+@router.post(
+    "/user/course/{course_id}",
+    summary="用户请求选课",
+    description="用户请求选课接口“",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def add_user_course(
+    request: Request,
+    course_id: int = Path(..., title="课程ID", description="用户想要选课的课程ID"),
+) -> ResponseSchemaModel[None]:
+    user_id = request.user.id
+    await user_service.add_user_course(user_id=user_id, course_id=course_id)
+    return response_base.success(data=None)
+
+@router.delete(
+    "/user/course/{course_id}",
+    summary="用户请求删除选课",
+    description="用户请求删除选课接口“",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def delete_user_course(
+    request: Request,
+    course_id: int = Path(..., title="课程ID", description="课程ID"),
+) -> ResponseSchemaModel[None]:
+    user_id = request.user.id
+    await user_service.delete_user_course_by_course_id(user_id=user_id, course_id=course_id)
+    return response_base.success(data=None)
+

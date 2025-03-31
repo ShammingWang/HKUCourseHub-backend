@@ -26,4 +26,20 @@ class CRUDUserCourse(CRUDPlus[UserCourse]):
         """
         return await self.select_models(db, user_id=user_id)
 
+    # async def get_by_user_id_and_course_id(self, db: AsyncSession, user_id: int, course_id: int) -> UserCourse | None:
+    #     """
+    #     根据用户ID和课程ID获取课程
+
+    #     :param db:
+    #     :param user_id:
+    #     :param course_id:
+    #     :return:
+    #     """
+    #     return await self.select(
+    #         db,
+    #         where=and_(
+    #             UserCourse.user_id == user_id,
+    #             UserCourse.course_id == course_id
+    #         )
+    #     )
 user_course_dao: CRUDUserCourse = CRUDUserCourse(UserCourse)

@@ -15,8 +15,8 @@ class UserCourse(Base):
     course_id: Mapped[int] = mapped_column(ForeignKey('courses.id', ondelete='CASCADE'), nullable=False, comment='课程ID')
 
     # 选课与用户多对一
-    user: Mapped['User'] = relationship(back_populates='user_courses')  # noqa: F821
+    user: Mapped['User'] = relationship(back_populates='user_courses', init=False)  # noqa: F821
     # 选课与课程多对一
-    course: Mapped['Course'] = relationship(back_populates='user_courses')  # noqa: F821
+    course: Mapped['Course'] = relationship(back_populates='user_courses', init=False)  # noqa: F821
     
     # added_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=timezone.now, comment='添加时间')

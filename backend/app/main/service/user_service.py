@@ -8,12 +8,13 @@ from sqlalchemy import Select
 
 from backend.app.main.schema.user import GetUserInfoDetail, RegisterUserParam
 from backend.app.main.crud.crud_user import user_dao
+from backend.app.main.crud.crud_user_course import user_course_dao
+from backend.app.main.crud.crud_course import course_dao
 
+
+from backend.app.main.schema.user_course import CreateUserCourse
 from backend.common.exception import errors
-from backend.common.security.jwt import get_hash_password, get_token, jwt_decode, password_verify, superuser_verify
-from backend.core.conf import settings
 from backend.database.db import async_db_session
-from backend.database.redis import redis_client
 
 
 class UserService:
@@ -40,5 +41,52 @@ class UserService:
             if not user:
                 raise errors.NotFoundError(msg='id为{}的用户不存在'.format(id))
             return GetUserInfoDetail.model_validate(user)
+
+    @staticmethod
+    async def add_user_course(user_id: int, course_id: int) -> None:
+        async with async_db_session.begin() as db:
+            # 检查课程是否存在
+            course = await course_dao.select_model(db, course_id)
+            if not course:
+                raise errors.NotFoundError(msg='id为{}的课程不存在'.format(course_id))
+            user_course = await user_course_dao.select_model_by_column(
+                session=db,
+                user_id=user_id,
+                course_id=course_id
+            )
+            if user_course:
+                raise errors.ForbiddenError(msg='用户已选这门课')
+            
+            await user_course_dao.create_model(
+                session=db,
+                obj=CreateUserCourse(
+                    user_id=user_id,
+                    course_id=course_id
+                )
+            )
+
+    @staticmethod
+    async def delete_user_course_by_course_id(user_id: int, course_id: int) -> None:
+        async with async_db_session.begin() as db:
+            # 检查课程是否存在
+            course = await course_dao.select_model(db, course_id)
+            if not course:
+                raise errors.NotFoundError(msg='id为{}的课程不存在'.format(course_id))
+
+            # 查找用户选课记录
+            user_course = await user_course_dao.select_model_by_column(
+                session=db,
+                user_id=user_id,
+                course_id=course_id
+            )
+            if not user_course:
+                raise errors.NotFoundError(msg='用户未选这门课')
+
+            # 删除用户选课记录
+            await user_course_dao.delete_model(
+                session=db,
+                pk=user_course.id
+            )
+
 
 user_service: UserService = UserService()
