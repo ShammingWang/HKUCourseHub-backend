@@ -4,13 +4,18 @@ from sqlalchemy import Select
 
 from backend.app.main.crud.crud_course import course_dao
 from backend.app.main.crud.crud_user_course import user_course_dao
+from backend.app.main.crud.crud_user_favorite_course import user_favorite_course_dao
+
 
 from backend.app.main.model.courses import Course
 from backend.app.main.schema.course import CreateCourse, GetCourseDetailWithRelation
 from backend.app.main.schema.course_schedule import CreateCourseSchedule, UpdateCourseSchedule
 from backend.app.main.schema.course_teacher import CreateCourseTeacher, UpdateCourseTeacher
+from backend.app.main.schema.favorite_course import CreateUserFavoriteCourse
+
 from backend.app.main.crud.curd_course_teacher import course_teacher_dao
 from backend.app.main.crud.crud_course_schedule import course_schedule_dao
+
 
 from backend.common.exception import errors
 from backend.database.db import async_db_session
@@ -45,6 +50,7 @@ class CourseService:
             return [await CourseService.get_course_with_relation_by_id(course_id=user_course.course_id) 
                     for user_course in user_course_list]
 
+    
     @staticmethod
     async def get_course_with_relation_by_id(*, course_id: int) -> GetCourseDetailWithRelation:
         async with async_db_session.begin() as db:
@@ -143,5 +149,34 @@ class CourseService:
                 flush=True  # 确保能拿到生成的 ID
             )
             return course
+
+    # 非常类似选课
+    @staticmethod
+    async def get_current_user_favorite_courses(*, user_id: int) -> list[GetCourseDetailWithRelation]:
+        async with async_db_session.begin() as db:
+            user_favorite_course_list = await user_favorite_course_dao.select_models(db, user_id=user_id)
+            return [await CourseService.get_course_with_relation_by_id(course_id=user_favorite_course.course_id) 
+                for user_favorite_course in user_favorite_course_list]
+
+    @staticmethod
+    async def add_user_favorite_course(*, user_id: int, course_id: int) -> None:
+        async with async_db_session.begin() as db:
+            # 先判断课程是否存在
+            course = await course_dao.get(db, course_id)
+            if course is None:
+                raise errors.NotFoundError(msg='id为{}的课程不存在'.format(course_id))
+            
+            user_favorite_course = await user_favorite_course_dao.select_model_by_column(db, user_id=user_id, course_id=course_id)
+            if user_favorite_course is not None:
+                raise errors.ForbiddenError(msg='该课程已加入收藏')
+            await user_favorite_course_dao.create_model(db, obj=CreateUserFavoriteCourse(user_id=user_id, course_id=course_id))
+    
+    @staticmethod
+    async def delete_user_favorite_course(*, user_id: int, course_id: int) -> None:
+        async with async_db_session.begin() as db:
+            user_favorite_course = await user_favorite_course_dao.select_model_by_column(db, user_id=user_id, course_id=course_id)
+            if user_favorite_course is None:
+                raise errors.NotFoundError(msg='该课程未加入收藏')
+            await user_favorite_course_dao.delete_model_by_column(db, user_id=user_id, course_id=course_id)
 
 course_service: CourseService = CourseService()

@@ -16,6 +16,6 @@ class FavoriteCourse(Base):
     # added_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=timezone.now, comment='添加时间')
 
     # 收藏与用户多对一
-    user: Mapped['User'] = relationship(back_populates='favorite_courses')  # noqa: F821
+    user: Mapped['User'] = relationship(back_populates='favorite_courses', init=False)  # noqa: F821
     # 收藏与课程多对一
-    course: Mapped['Course'] = relationship(back_populates='favorite_courses')  # noqa: F821
+    course: Mapped['Course'] = relationship(back_populates='favorite_courses', init=False)  # noqa: F821

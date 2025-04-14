@@ -81,3 +81,54 @@ async def delete_user_course(
     await user_service.delete_user_course_by_course_id(user_id=user_id, course_id=course_id)
     return response_base.success(data=None)
 
+
+
+@router.get(
+    "/user/favorite",
+    summary="获取当前用户收藏的课程列表",
+    description="获取当前用户收藏的课程列表",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def get_favorite_courses_by_current_user(
+    request: Request,
+    response: Response,
+) -> ResponseSchemaModel[list[GetCourseDetailWithRelation]]:
+    user_id = request.user.id  # 由jwt认证提供的用户ID
+    courses = await course_service.get_current_user_favorite_courses(user_id=user_id)
+    return response_base.success(data=courses)
+
+@router.post(
+    "/user/favorite/{course_id}",
+    summary="添加当前用户收藏的课程",
+    description="添加当前用户收藏的课程",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def add_favorite_courses_by_current_user(
+    request: Request,
+    course_id: int = Path(..., title="课程ID", description="用户想收藏的课程ID"),
+) -> ResponseSchemaModel[None]:
+    user_id = request.user.id  # 由jwt认证提供的用户ID
+    await course_service.add_user_favorite_course(user_id=user_id, course_id=course_id)
+    return response_base.success(data=None)
+
+@router.delete(
+    "/user/favorite/{course_id}",
+    summary="删除当前用户收藏的课程",
+    description="删除当前用户收藏的课程",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def delete_favorite_courses_by_current_user(
+    request: Request,
+    course_id: int = Path(..., title="课程ID", description="用户想收藏的课程ID"),
+) -> ResponseSchemaModel[None]:
+    user_id = request.user.id
+    # 由jwt认证提供的用户ID
+    await course_service.delete_user_favorite_course(user_id=user_id, course_id=course_id)
+    return response_base.success(data=None)
+
