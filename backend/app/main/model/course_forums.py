@@ -18,8 +18,8 @@ class CourseForum(Base):
     # created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=timezone.now, comment='创建时间')
 
     # 论坛与课程多对一
-    course: Mapped['Course'] = relationship(back_populates='course_forums')  # noqa: F821
+    course: Mapped['Course'] = relationship(back_populates='course_forums', init=False)  # noqa: F821
     # 论坛与用户多对一
-    creator: Mapped['User'] = relationship(back_populates='course_forums')  # noqa: F821
+    creator: Mapped['User'] = relationship(back_populates='course_forums', init=False)  # noqa: F821
     # 论坛与回复一对多
-    forum_replies: Mapped[list['ForumReply']] = relationship(back_populates='forum', cascade='all, delete-orphan')  # noqa: F821
+    forum_replies: Mapped[list['ForumReply']] = relationship(back_populates='forum', cascade='all, delete-orphan', init=False)  # noqa: F821

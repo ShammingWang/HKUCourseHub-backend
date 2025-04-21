@@ -1,17 +1,12 @@
 from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, Path
 # from sqlalchemy.orm import Session
-from backend.app.main.model.courses import Course
-from backend.app.main.schema.course import GetCourseDetail, GetCourseDetailWithRelation
+from backend.app.main.schema.course import GetCourseDetailWithRelation
 from backend.app.main.schema.user import GetUserInfoDetail
 from backend.app.main.service.user_service import user_service
 from backend.app.main.service.course_service import course_service
-from backend.common.exception.errors import NotFoundError
-from backend.common.pagination import DependsPagination, PageData, paging_data
-from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
+from backend.common.response.response_schema import ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth
-from backend.database.db import CurrentSession
-from sqlalchemy.orm import selectinload
 
 
 router = APIRouter()
