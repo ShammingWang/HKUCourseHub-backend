@@ -46,3 +46,19 @@ async def add_forum_by_course_id(
     await forum_service.add_forum_by_course_id(obj=obj, user_id=user_id)
     return response_base.success(data=None)
 
+@router.delete(
+    "/forum/{forum_id}",
+    summary="删除课程论坛",
+    description="根据论坛ID删除课程论坛",
+    dependencies=[
+        DependsJwtAuth,  # 需要jwt认证
+    ]
+)
+async def delete_forum_by_id(
+    request: Request,
+    forum_id: int = Path(..., title="论坛ID", description="课程论坛的唯一ID")
+) -> ResponseSchemaModel[None]:
+    user_id = request.user.id
+    await forum_service.delete_forum_by_id(forum_id=forum_id, user_id=user_id)
+    return response_base.success(data=None)
+

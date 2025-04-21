@@ -43,5 +43,14 @@ class ForumService:
                 commit=True  # 关键点
             )
 
+    @staticmethod
+    async def delete_forum_by_id(forum_id: int, user_id: int):
+        async with async_db_session() as db:
+            obj = await course_forum_dao.select_model(db, pk=forum_id)
+            if obj is None:
+                raise errors.NotFoundError(msg="未找到该课程论坛")
+            if obj.created_by != user_id:
+                raise errors.ForbiddenError(msg="你无权删除他人的帖子")
+            await course_forum_dao.delete_model(db, pk=forum_id, commit=True)
 
 forum_service: ForumService = ForumService()
