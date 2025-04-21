@@ -4,6 +4,7 @@ from typing import Optional
 
 
 class UserFavoriteCourseSchemaBase(SchemaBase):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     course_id: int
     user_id: int
