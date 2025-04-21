@@ -6,6 +6,10 @@ from backend.app.main.crud.crud_forum import course_forum_dao
 from backend.app.main.crud.crud_course import course_dao
 from backend.app.main.schema.form import GetForumDetail, CreateForumParam, CreateForum
 from backend.common.exception import errors
+from backend.app.main.schema.forum_reply import CreateForumReplyParam, CreateForumReply, GetForumReplyDetail
+from backend.app.main.crud.crud_forum_reply import forum_reply_dao
+
+
 
 from backend.database.db import async_db_session
 
@@ -52,5 +56,49 @@ class ForumService:
             if obj.created_by != user_id:
                 raise errors.ForbiddenError(msg="你无权删除他人的帖子")
             await course_forum_dao.delete_model(db, pk=forum_id, commit=True)
+
+    @staticmethod
+    async def add_reply_by_forum_id(*, obj: CreateForumReplyParam, user_id: int):
+        async with async_db_session() as db:
+            # 先查询课程论坛是否存在
+            forum = await course_forum_dao.select_model(db, pk=obj.forum_id)
+            if not forum:
+                raise errors.NotFoundError(msg="未找到id为{}的课程论坛".format(obj.forum_id))
+
+            await forum_reply_dao.create_model(
+                db,
+                CreateForumReply(
+                    **obj.model_dump(),  # 将CreateForumReplyParam转换为CreateForumReply
+                    user_id=user_id,  # 设置user_id
+                ),
+                commit=True
+            )
+    @staticmethod
+    async def get_replies_by_forum_id(forum_id: int) -> List[GetForumReplyDetail]:
+        async with async_db_session() as db:
+            # 先查询课程论坛是否存在
+            forum = await course_forum_dao.select_model(db, pk=forum_id)
+            if not forum:
+                raise errors.NotFoundError(msg="未找到id为{}的课程论坛".format(forum_id))
+            replies = await forum_reply_dao.select_models(db, forum_id=forum_id)
+            reply_list = []
+            for reply in replies:
+                await db.refresh(reply, ['user'])
+                reply_list.append(GetForumReplyDetail.model_validate(reply))
+            return reply_list
+    @staticmethod
+    async def delete_reply_by_id(reply_id: int, user_id: int) -> None:
+        async with async_db_session() as db:
+            # 查找回复
+            reply = await forum_reply_dao.select_model(db, pk=reply_id)
+            if not reply:
+                raise errors.NotFoundError(msg=f"未找到ID为 {reply_id} 的回复")
+
+            # 权限校验：只能删除自己的回复
+            if reply.user_id != user_id:
+                raise errors.ForbiddenError(msg="你无权删除他人的回复")
+
+            # 删除回复
+            await forum_reply_dao.delete_model(db, pk=reply_id, commit=True)
 
 forum_service: ForumService = ForumService()

@@ -17,6 +17,6 @@ class ForumReply(Base):
     # created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=timezone.now, comment='创建时间')
 
     # 回复与论坛多对一
-    forum: Mapped['CourseForum'] = relationship(back_populates='forum_replies')  # noqa: F821
+    forum: Mapped['CourseForum'] = relationship(back_populates='forum_replies', init=False)  # noqa: F821
     # 回复与用户多对一
-    user: Mapped['User'] = relationship(back_populates='forum_replies')  # noqa: F821
+    user: Mapped['User'] = relationship(back_populates='forum_replies', init=False)  # noqa: F821

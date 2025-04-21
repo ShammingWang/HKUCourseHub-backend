@@ -16,7 +16,8 @@ class ForumSchemaBase(SchemaBase):
 class GetForumDetail(ForumSchemaBase):
     model_config = ConfigDict(from_attributes=True)
     creator: GetUserInfoDetail  # 额外返回创建者User的信息
-
+    created_time: datetime
+    
 class CreateForumParam(SchemaBase):
     """创建课程论坛数据模型"""
     # id: int  数据库自增主键
