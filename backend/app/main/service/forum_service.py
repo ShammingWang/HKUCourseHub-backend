@@ -14,6 +14,11 @@ class ForumService:
     @staticmethod
     async def get_forums_by_course_id(*, course_id: int) -> List[GetForumDetail]:
         async with async_db_session() as db:
+            # 先查询课程是否存在
+            course = await course_dao.select_model(db, pk=course_id)
+            if not course:
+                raise errors.RequestError()
+            
             forums = await course_forum_dao.select_models(db, course_id=course_id)
             for forum in forums:
                 await db.refresh(forum, ['creator'])
